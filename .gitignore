@@ -1,0 +1,14 @@
+# Exclude generated VS Code stuff
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+!.vscode/c_cpp_properties.json
+
+# Exclude logs
+*.log
+
+# Exclude downloaded dependencies
+get-docker.sh
