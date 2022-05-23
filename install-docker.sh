@@ -31,9 +31,18 @@ if [ $WSL == 'true' ]; then
     fi
 
     # Set ./bashrc to start docker service
-    APPEND="sudo /etc/init.d/docker start > /dev/null"
-    FILE="$HOME/.bashrc"
-    grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
+    # APPEND="sudo /etc/init.d/docker start > /dev/null"
+    # FILE="$HOME/.bashrc"
+    # grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
+    
+    # Set /etc/wsl.conf to start docker service
+    APPEND="[boot]\ncommand = service docker start"
+    FILE="/etc/wsl.conf"
+    if ! grep -qxF "[boot]" "$FILE"; then
+        echo -e "$APPEND" | sudo tee -a "$FILE" > /dev/null
+    else
+        NEED_MANUAL="true"
+    fi
 else
     sudo systemctl enable docker.service
     sudo systemctl enable docker.socket
@@ -63,3 +72,11 @@ echo "Testing docker install..."
 docker run hello-world
 
 cd "$WORKING_DIR"
+
+if [ $NEED_MANUAL == 'true' ]; then
+    echo "WARNING: /etc/wsl.conf already contains a [boot] section."
+    echo "Please add the following to the 'command = ...' line in /etc/wsl.conf:"
+    echo "  service docker start"
+    echo " "
+fi
+
