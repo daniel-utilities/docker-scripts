@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-WORKING_DIR=$PWD
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 WSL=$(if grep -q microsoft /proc/version; then echo 'true'; else echo 'false'; fi)
 
@@ -30,19 +29,19 @@ if [ $WSL == 'true' ]; then
         echo "$APPEND" | sudo EDITOR='tee -a' visudo
     fi
 
-    # Set ./bashrc to start docker service
-    # APPEND="sudo /etc/init.d/docker start > /dev/null"
-    # FILE="$HOME/.bashrc"
-    # grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
+    # Set ./profile to start docker service
+    APPEND="sudo /etc/init.d/docker start & disown"
+    FILE="$HOME/.profile"
+    grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
     
     # Set /etc/wsl.conf to start docker service
-    APPEND="[boot]\ncommand = service docker start"
-    FILE="/etc/wsl.conf"
-    if ! grep -qxF "[boot]" "$FILE"; then
-        echo -e "$APPEND" | sudo tee -a "$FILE" > /dev/null
-    else
-        NEED_MANUAL="true"
-    fi
+    # APPEND="[boot]\ncommand = service docker start"
+    # FILE="/etc/wsl.conf"
+    # if ! grep -qxF "[boot]" "$FILE"; then
+    #     echo -e "$APPEND" | sudo tee -a "$FILE" > /dev/null
+    # else
+    #     NEED_MANUAL="true"
+    # fi
 else
     sudo systemctl enable docker.service
     sudo systemctl enable docker.socket
@@ -51,7 +50,7 @@ fi
 
 # Start docker
 echo "Starting Docker services"
-if [ $WSL == 'true' ]; then
+if [ "$WSL" == 'true' ]; then
     sudo /etc/init.d/docker start
 else
     sudo systemctl start containerd
@@ -71,9 +70,7 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 echo "Testing docker install..."
 docker run hello-world
 
-cd "$WORKING_DIR"
-
-if [ $NEED_MANUAL == 'true' ]; then
+if [ "$NEED_MANUAL" == 'true' ]; then
     echo "WARNING: /etc/wsl.conf already contains a [boot] section."
     echo "Please add the following to the 'command = ...' line in /etc/wsl.conf:"
     echo "  service docker start"
