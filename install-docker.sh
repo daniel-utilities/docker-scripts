@@ -30,7 +30,7 @@ if [ $WSL == 'true' ]; then
     fi
 
     # Set ./profile to start docker service
-    APPEND="sudo /etc/init.d/docker start & disown"
+    APPEND="(nohup sudo /etc/init.d/docker start </dev/null >/dev/null 2>&1 &)"
     FILE="$HOME/.profile"
     grep -qxF "$APPEND" "$FILE" || echo "$APPEND" | tee -a "$FILE" > /dev/null
     
