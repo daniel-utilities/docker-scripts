@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 WORKING_DIR=$PWD
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 WSL=$(if grep -q microsoft /proc/version; then echo 'true'; else echo 'false'; fi)
 
 # Prereqs
