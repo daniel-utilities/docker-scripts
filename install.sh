@@ -7,6 +7,8 @@ script_dir="$(dirname "$(readlink -f "$0")")"
 
 # Import functions from other files
 sources=(   "$script_dir/bash-common-scripts/common-functions.sh" 
+            "$script_dir/bash-common-scripts/common-io.sh"
+            "$script_dir/bash-common-scripts/common-sysconfig.sh"
             "$script_dir/installation-routines.sh"                     )
 for i in "${sources[@]}"; do
     if [ ! -e "$i" ]; then
@@ -19,6 +21,17 @@ for i in "${sources[@]}"; do
         source "$i"
     fi
 done
+
+
+# ***************************************
+# ARGS
+# ***************************************
+declare -a args=( [skip-all]=false )
+fast_argparse args "" "skip-prompts"
+
+if [[ "${args[skip-prompts]}" == true ]]; then
+    _AUTOCONFIRM=true
+fi
 
 
 # ***************************************
