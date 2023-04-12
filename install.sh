@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ***************************************
-# FUNCTIONS
+# DEFINITIONS
 # ***************************************
 script_dir="$(dirname "$(readlink -f "$0")")"
 
@@ -22,6 +22,18 @@ for i in "${sources[@]}"; do
     fi
 done
 
+# Menu options
+declare -a options descriptions functions
+options[1]="Install prerequisites"
+fncalls[1]="install_prerequisites"
+options[2]="Download and run the official Docker install script"
+fncalls[2]="run_docker_script"
+options[3]="Enable system services"
+fncalls[3]="enable_services"
+options[4]="Add user to group 'docker'"
+fncalls[4]="set_group"
+options[5]="Test Docker installation"
+fncalls[5]="test_docker"
 
 # ***************************************
 # ARGS
@@ -45,17 +57,5 @@ description="""\
 The following steps are required.
 Please run them in order. \
 """
-declare -A options
-declare -A fncalls; 
-options[1]="Install prerequisites"
-fncalls[1]="install_prerequisites"
-options[2]="Download and run the official Docker install script"
-fncalls[2]="run_docker_script"
-options[3]="Enable system services"
-fncalls[3]="enable_services"
-options[4]="Add user to group 'docker'"
-fncalls[4]="set_group"
-options[5]="Test Docker installation"
-fncalls[5]="test_docker"
 
 function_select_menu options fncalls "$title" "$description"
